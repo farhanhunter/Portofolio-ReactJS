@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -15,23 +13,32 @@ function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
 
+  // useEffect untuk mendeteksi perubahan section yang aktif saat scroll
   useEffect(() => {
     const handleScroll = () => {
       const sections = document.querySelectorAll("section");
-      const scrollPosition = window.scrollY + 200; // Adjust 200 to your needs
+      const scrollPosition = window.scrollY + window.innerHeight / 2; // Setengah dari tinggi layar sebagai offset
+
       sections.forEach((section) => {
         const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
         const sectionId = section.getAttribute("id");
 
-        if (scrollPosition >= sectionTop) {
+        // Cek apakah scrollPosition berada dalam rentang section yang sedang terlihat
+        if (
+          scrollPosition >= sectionTop &&
+          scrollPosition < sectionTop + sectionHeight
+        ) {
           setActiveSection(`#${sectionId}`);
         }
       });
     };
 
     window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Menjalankan handleScroll sekali untuk memastikan state benar saat pertama kali render
+
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll); // Cleanup event listener ketika komponen unmount
     };
   }, []);
 
@@ -42,12 +49,12 @@ function Navbar() {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
+          <a href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img
               className="h-8 w-auto"
               src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              alt=""
+              alt="Logo"
             />
           </a>
         </div>
@@ -68,8 +75,8 @@ function Navbar() {
               href={item.href}
               className={`text-sm font-semibold leading-6 ${
                 activeSection === item.href
-                  ? "text-indigo-600"
-                  : "text-gray-900 hover:text-gray-600"
+                  ? "text-indigo-600" // Warna ketika link aktif
+                  : "text-gray-900 hover:text-gray-600" // Warna default dan saat hover
               }`}
             >
               {item.name}
@@ -86,12 +93,12 @@ function Navbar() {
         <div className="fixed inset-0 z-50" />
         <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
+            <a href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
               <img
                 className="h-8 w-auto"
                 src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                alt=""
+                alt="Logo"
               />
             </a>
             <button
